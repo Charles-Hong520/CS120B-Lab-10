@@ -52,6 +52,7 @@ void TimerSet(unsigned long M) {
 enum ThreeLEDsSM {TLstart, zero, one, two} TLstate;
 enum BlinkingLEDSM {BLstart, on, off} BLstate;
 unsigned char threeLEDs, blinkingLED;
+unsigned long BL_elapsedTime=0, TL_elapsedTime=0;
 void ThreeLEDsTick() {
     switch(TLstate) {
         case TLstart:
@@ -103,26 +104,35 @@ void BlinkingLEDTick() {
         blinkingLED = 0x00;
         break;
         case on:
-        blinkingLED = 0xFF;
+        blinkingLED = 0x08;
         break;
     }
 }
 
 void CombineLEDsTick() {
-    ThreeLEDsTick();
-    BlinkingLEDTick();
-    PORTB = (blinkingLED&0x08)+threeLEDs;
+    if(TL_elapsedTime>=1000) {
+        ThreeLEDsTick();
+        TL_elapsedTime = 0;
+    }
+    if(BL_elapsedTime>=1000) {
+        BlinkingLEDTick();
+        BL_elapsedTime = 0;
+    }
+    PORTB = blinkingLED+threeLEDs;
 }
 
 int main(void) {
     DDRB = 0x0F; PORTB = 0x00;
-    TimerSet(1000); TimerOn();
+    TLstate = TLstart;
+    BLstate = BLstart;
+    TimerSet(1);
+    TimerOn();
     while (1) {
-        TLstate = TLstart;
-        BLstate = BLstart;
         CombineLEDsTick();
         while(!TimerFlag);
         TimerFlag = 0;
+        TL_elapsedTime++;
+        BL_elapsedTime++;
     }
     return 1;
 }
