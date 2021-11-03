@@ -51,8 +51,10 @@ void TimerSet(unsigned long M) {
 
 enum ThreeLEDsSM {TLstart, zero, one, two} TLstate;
 enum BlinkingLEDSM {BLstart, on, off} BLstate;
+enum PWMSM {PWMstart, hi, lo} PWMstate;
 unsigned char threeLEDs, blinkingLED;
 unsigned long BL_elapsedTime=0, TL_elapsedTime=0;
+unsigned char i,speaker;
 void ThreeLEDsTick() {
     switch(TLstate) {
         case TLstart:
@@ -104,8 +106,36 @@ void BlinkingLEDTick() {
         blinkingLED = 0x00;
         break;
         case on:
-        blinkingLED = 0x08;
+        blinkingLED = 0x01;
         break;
+    }
+}
+
+void PWMTick() {
+    switch(PWMstate) {
+        case PWMstart:
+        state = hi;
+        i = speaker = 0;
+        break;
+        case hi:
+        if(i>=2) {
+            state = lo;
+            speaker = 0x00;
+        }
+        break;
+        case lo:
+        if(i>=2) {
+            state = hi;
+            speaker = 0x01;
+        }
+        break;
+    }
+    switch(PWMstate) {
+        case PWMstart: break;
+        case hi:
+        case lo:
+        i++;
+
     }
 }
 
@@ -118,11 +148,12 @@ void CombineLEDsTick() {
         BlinkingLEDTick();
         BL_elapsedTime = 0;
     }
-    PORTB = blinkingLED+threeLEDs;
+    if((PINA&0x04)==0x01) PWMTick();
+    PORTB = (speaker<<4)+(blinkingLED<<3)+threeLEDs;
 }
 
 int main(void) {
-    DDRB = 0x0F; PORTB = 0x00;
+    DDRB = 0x1F; PORTB = 0x00;
     TLstate = TLstart;
     BLstate = BLstart;
     TimerSet(1);
