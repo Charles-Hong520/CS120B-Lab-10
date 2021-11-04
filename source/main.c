@@ -51,10 +51,12 @@ void TimerSet(unsigned long M) {
 
 enum ThreeLEDsSM {TLstart, zero, one, two} TLstate;
 enum BlinkingLEDSM {BLstart, on, off} BLstate;
+enum AdjFreqSM {AFstart, press, release} AFstate;
 enum PWMSM {PWMstart, hi, lo} PWMstate;
 unsigned char threeLEDs, blinkingLED;
 unsigned long BL_elapsedTime=0, TL_elapsedTime=0;
-unsigned char i,speaker, H=2, L=2;
+unsigned char i,speaker;
+unsigned char H,L;
 void ThreeLEDsTick() {
     switch(TLstate) {
         case TLstart:
@@ -110,7 +112,28 @@ void BlinkingLEDTick() {
         break;
     }
 }
-
+void AdjustFreqTick() {
+    switch(AFstate) {
+        case AFstart:
+        AFstate = release;
+        H=2, L=2;
+        break;
+        case press:
+        if((PINA&0x03)==0x00) {
+            AFstate = release;
+        }
+        break;
+        case release:
+        if((PINA&0x03)==0x01) {
+            AFstate = press;
+            if(H<8) H++;
+        } else if((PINA&0x03)==0x02) {
+            AFstate = press;
+            if(H>1) H--;
+        }
+        break;
+    }
+}
 void PWMTick() {
     switch(PWMstate) {
         case PWMstart:
