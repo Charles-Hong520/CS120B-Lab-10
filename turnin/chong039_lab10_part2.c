@@ -1,13 +1,13 @@
 /*	Author: Charles Hong
  *  Partner(s) Name:  
  *	Lab Section: 022
- *	Assignment: Lab #10  Exercise #1
- *	Exercise Description: Three syncSM with B3-B0
+ *	Assignment: Lab #10  Exercise #2
+ *	Exercise Description: diff period Three syncSM with B3-B0
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  *  
- *  Demo Link: 
+ *  Demo Link: https://drive.google.com/file/d/1kAOtv6wVi2TUzMNvaz7aepM8aQl7M1pc/view?usp=sharing
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>

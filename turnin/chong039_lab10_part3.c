@@ -1,13 +1,13 @@
 /*	Author: Charles Hong
  *  Partner(s) Name:  
  *	Lab Section: 022
- *	Assignment: Lab #10  Exercise #1
- *	Exercise Description: Three syncSM with B3-B0
+ *	Assignment: Lab #10  Exercise #3
+ *	Exercise Description: Three syncSM with B3-B0 and speaker
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  *  
- *  Demo Link: 
+ *  Demo Link: https://drive.google.com/file/d/1yBprb03gRer0xF1g8Ns88YYrzzubQgb3/view?usp=sharing
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>
